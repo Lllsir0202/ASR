@@ -15,7 +15,6 @@ pycodestyle==2.6.0
 pyflakes==2.2.0
 torch==1.13.0
 torchaudio==0.13.0
-faiss==1.7.3
 faiss_gpu==1.7.2
 Flask==3.0.0
 jiwer==3.0.3
