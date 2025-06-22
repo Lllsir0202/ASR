@@ -392,17 +392,19 @@ def init_dataset_and_dataloader(args, configs, tokenizer, seed=777):
     train_data_loader = DataLoader(train_dataset,
                                    batch_size=None,
                                    pin_memory=args.pin_memory,
-                                   num_workers=args.num_workers,
-                                   persistent_workers=True,
+                                   num_workers=0,
+                                   persistent_workers=False,
                                    generator=generator,
-                                   prefetch_factor=args.prefetch)
+                                   # prefetch_factor=args.prefetch)
+                                   prefetch_factor=None)
+                                   
     cv_data_loader = DataLoader(cv_dataset,
                                 batch_size=None,
                                 pin_memory=args.pin_memory,
-                                num_workers=args.num_workers,
-                                persistent_workers=True,
+                                num_workers=0,
+                                persistent_workers=False,
                                 generator=generator,
-                                prefetch_factor=args.prefetch)
+                                prefetch_factor=None)
     return train_dataset, cv_dataset, train_data_loader, cv_data_loader
 
 

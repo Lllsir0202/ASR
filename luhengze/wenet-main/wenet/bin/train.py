@@ -11,7 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 from __future__ import print_function
 
 import argparse
@@ -24,6 +23,15 @@ import yaml
 import torch.distributed as dist
 
 from torch.distributed.elastic.multiprocessing.errors import record
+
+import sys
+sys.path.append(os.getcwd())
+# 如果不使用分布式训练，可以直接设置 RANK 和 WORLD_SIZE
+os.environ["RANK"] = "0"  # 默认 rank 0
+os.environ["WORLD_SIZE"] = "1"  # 单 GPU 环境，只有一个进程
+os.environ["MASTER_ADDR"] = "localhost"
+os.environ["MASTER_PORT"] = "12345"
+
 from wenet.utils.common import lrs_to_str, TORCH_NPU_AVAILABLE  # noqa just ensure to check torch-npu
 
 from wenet.utils.executor import Executor
@@ -37,6 +45,11 @@ from wenet.utils.train_utils import (
     init_optimizer_and_scheduler, init_scaler, trace_and_print_model,
     wrap_cuda_model, init_summarywriter, save_model, log_per_epoch,
     add_lora_args, reinit_lora)
+
+# from torch.utils.tensorboard import SummaryWriter
+# import torchvision.utils as vutils
+# 初始化TensorBoard日志
+# writer = SummaryWriter(log_dir='runs/experiment')
 
 
 def get_args():
@@ -171,6 +184,9 @@ def main():
         }
         # epoch cv: tensorboard && log
         log_per_epoch(writer, info_dict=info_dict)
+        # writer.add_scalar('train/grad norm', loss_dict['grad_norm'] , epoch)
+        # writer.add_scalar('train/loss_att', loss_dict['loss_att'], epoch)
+        # writer.add_scalar('train/loss_ctc', loss_dict['loss_ctc'], epoch)
         save_model(model, info_dict=info_dict)
 
         final_epoch = epoch
