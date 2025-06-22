@@ -19,6 +19,9 @@ import copy
 import logging
 import os
 
+import sys
+sys.path.append(os.getcwd())
+
 import torch
 import yaml
 from torch.utils.data import DataLoader
