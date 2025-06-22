@@ -12,22 +12,22 @@ num_nodes=1
 node_rank=0
 
 nj=16
-dict=exp/20210601_u2++_conformer_exp/units.txt
+dict=./20210601_u2++_conformer_exp_aishell/units.txt
 
 data_type=raw
 
 # data setting
-train_set='aishell/train'
+train_set='../SeniorTalk/sentence_data/'
 dstore_name='aishell'
 
-test_set='aishell/test'
+test_set='../SeniorTalk/sentence_data/'
 test_dataset_name='aishell'
 
 # model setting
 train_config=conf/train.yaml
 cmvn=true
-dir='exp/20210601_u2++_conformer_exp'
-decode_checkpoint="$dir/final.pt"
+dir='./20210601_u2++_conformer_exp_aishell'
+decode_checkpoint="$dir/epoch_75.pt"
 
 # knn setting
 decode_modes="knn_ctc"
@@ -58,9 +58,9 @@ if [ ${stage} -le 1 ] && [ ${stop_stage} -ge 1 ]; then
     mkdir -p $dstore_dir
     python wenet_knn_ctc.py --gpu $gpu \
       --mode $mode \
-      --config $dir/train.yaml \
+      --config conf/train.yaml \
       --data_type $data_type \
-      --test_data data/$train_set/data.list \
+      --test_data $test_set/data_train.list \
       --checkpoint $decode_checkpoint \
       --beam_size 10 \
       --batch_size 1 \
@@ -94,9 +94,9 @@ if [ ${stage} -le 2 ] && [ ${stop_stage} -ge 2 ]; then
     mkdir -p $test_dir
     python wenet_knn_ctc.py  --gpu $gpu \
       --mode $mode \
-      --config $dir/train.yaml \
+      --config conf/train.yaml \
       --data_type $data_type \
-      --test_data data/$test_set/data.list \
+      --test_data $test_set/data_test.list \
       --checkpoint $decode_checkpoint \
       --beam_size 10 \
       --batch_size 1 \
@@ -117,7 +117,7 @@ if [ ${stage} -le 2 ] && [ ${stop_stage} -ge 2 ]; then
       --scale_lmbda_temp $scale_lmbda_temp
     sed -i "s|▁| |g" $test_dir/${test_dataset_name}_text
     python tools/compute-wer.py --char=1 --v=1 \
-      data/$test_set/text $test_dir/${test_dataset_name}_text > $test_dir/${test_dataset_name}_wer
+      $test_set/text $test_dir/${test_dataset_name}_text > $test_dir/${test_dataset_name}_wer
     tail $test_dir/${test_dataset_name}_wer
   } &
   done
