@@ -1,5 +1,5 @@
 accum_grad: 1
-cmvn_file: exp/20210601_u2++_conformer_exp/global_cmvn
+cmvn_file: './20210601_u2++_conformer_exp_aishell/global_cmvn'
 dataset_conf:
   filter_conf:
     max_length: 40960
