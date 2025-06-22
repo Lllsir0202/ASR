@@ -1,0 +1,71 @@
+wenet/bin/train.py --train_engine torch_ddp \
+      --config conf/train_conformer.yaml \
+      --data_type raw \
+      --train_data data/$train_set/data.list \
+      --cv_data data/dev/data.list \
+      ${checkpoint:+--checkpoint $checkpoint} \
+      --model_dir ./ \
+      --tensorboard_dir ./ \
+      --ddp.dist_backend nccl\
+      --num_workers 8 \
+      --prefetch 10 \
+      --pin_memory \
+
+
+python wenet/bin/train.py --train_engine torch_ddp \
+      --config /root/autodl-tmp/wenet/finetuned/epoch_10.yaml \
+      --data_type raw \
+      --train_data /root/autodl-tmp/SeniorTalk/sentence_data/wav/data.list \
+      --cv_data /root/autodl-tmp/SeniorTalk/sentence_data/wav/data_val.list \
+      --checkpoint /root/autodl-tmp/wenet/finetuned/epoch_10.pt \
+      --model_dir ./ \
+      --tensorboard_dir ./ \
+      --ddp.dist_backend nccl\
+      --num_workers 1 \
+      --prefetch 10 \
+      --pin_memory \
+
+
+python wenet/bin/recognize.py --gpu 0 \
+    --modes ctc_greedy_search \
+    --config /root/autodl-tmp/wenet/epoch_10.yaml \
+    --data_type raw \
+    --test_data /root/autodl-tmp/SeniorTalk/sentence_data/wav/data_test.list \
+    --checkpoint /root/autodl-tmp/wenet/epoch_10.pt \
+    --batch_size 32 \
+    --blank_penalty 0.0 \
+    --result_dir ./ \
+
+
+python ./tools/compute-wer.py --char=1 --v=1 \
+      /root/autodl-tmp/SeniorTalk/sentence_data/wav/text ./ctc_greedy_search/text > ./ctc_greedy_search/cer
+
+
+
+python wenet/bin/train.py --train_engine torch_ddp \
+      --config /root/autodl-tmp/wenet/none_augment/epoch_1.yaml \
+      --data_type raw \
+      --train_data /root/autodl-tmp/SeniorTalk/sentence_data/wav/data.list \
+      --cv_data /root/autodl-tmp/SeniorTalk/sentence_data/wav/data_val.list \
+      --checkpoint /root/autodl-tmp/wenet/none_augment/epoch_1.pt \
+      --model_dir ./none_augment \
+      --tensorboard_dir ./ \
+      --ddp.dist_backend nccl\
+      --num_workers 1 \
+      --prefetch 10 \
+      --pin_memory \
+
+
+python wenet/bin/recognize.py --gpu 0 \
+    --modes ctc_greedy_search \
+    --config /root/autodl-tmp/wenet/none_augment/epoch_1.yaml \
+    --data_type raw \
+    --test_data /root/autodl-tmp/SeniorTalk/sentence_data/wav/data_test.list \
+    --checkpoint /root/autodl-tmp/wenet/none_augment/epoch_1.pt \
+    --batch_size 32 \
+    --blank_penalty 0.0 \
+    --result_dir ./ \
+
+
+python ./tools/compute-wer.py --char=1 --v=1 \
+      /root/autodl-tmp/SeniorTalk/sentence_data/wav/text ./ctc_greedy_search/text > ./ctc_greedy_search/cer
