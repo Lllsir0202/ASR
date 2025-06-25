@@ -1,0 +1,7 @@
+torch
+numpy
+git+https://github.com/openai/whisper.git
+tqdm
+transformers
+bitsandbytes
+faiss-cpu

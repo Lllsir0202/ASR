@@ -1,0 +1,22 @@
+{
+    "train_json": "/home/liuhaoze/liuhaoze_space/Code/whisper-finetuning/child_train.json",
+    "dev_json": "/home/liuhaoze/liuhaoze_space/Code/whisper-finetuning/child_dev.json",
+    "batch_size": 1,
+    "dev_batch_size": 16,
+    "no_timestamps_training": false,
+    "prompt_use_rate": 0.5,
+    "no_timestamps_rate": 0.5,
+    "save_dir": "/home/liuhaoze/liuhaoze_space/Code/whisper-finetuning/output_child_mandarin/small_model_finetuned",
+    "device": "cuda",
+    "model": "small",
+    "train_only_decoder": false,
+    "lr": 0.0001,
+    "accum_grad_steps": 64,
+    "warmup_steps": 500,
+    "max_grad_norm": 1.0,
+    "train_steps": 5000,
+    "eval_steps": 500,
+    "save_all_checkpoints": false,
+    "seed": 42,
+    "use_adam_8bit": false
+}
